@@ -8,6 +8,8 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
@@ -20,8 +22,10 @@ public class GameScreen extends ScreenAdapter {
 
     private ShapeRenderer shapeRenderer;
     private Viewport viewport;
-    private Camera camera;
+    private OrthographicCamera camera;
     private SpriteBatch batch;
+    private TiledMap tiledMap;
+    private OrthogonalTiledMapRenderer tiledMapRenderer;
 
     public GameScreen(PeteGame game) {
         this.game = game;
@@ -39,9 +43,14 @@ public class GameScreen extends ScreenAdapter {
         camera.update();
 
         viewport = new FitViewport(WORLD_WIDTH, WORLD_HEIGHT, camera);
+        viewport.apply(true);
 
         shapeRenderer = new ShapeRenderer();
         batch = new SpriteBatch();
+
+        tiledMap = game.getAssetManager().get("pete.tmx");
+        tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap, batch);
+        tiledMapRenderer.setView(camera);
     }
 
     @Override
@@ -63,9 +72,9 @@ public class GameScreen extends ScreenAdapter {
     private void draw() {
         batch.setProjectionMatrix(camera.projection);
         batch.setTransformMatrix(camera.view);
-        batch.begin();
-        //
-        batch.end();
+//        batch.begin();
+        tiledMapRenderer.render();
+//        batch.end();
     }
 
     private void clearScreen() {
