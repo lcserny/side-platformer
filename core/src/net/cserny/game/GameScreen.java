@@ -26,6 +26,7 @@ public class GameScreen extends ScreenAdapter {
     private SpriteBatch batch;
     private TiledMap tiledMap;
     private OrthogonalTiledMapRenderer tiledMapRenderer;
+    private Pete pete;
 
     public GameScreen(PeteGame game) {
         this.game = game;
@@ -47,6 +48,7 @@ public class GameScreen extends ScreenAdapter {
 
         shapeRenderer = new ShapeRenderer();
         batch = new SpriteBatch();
+        pete = new Pete();
 
         tiledMap = game.getAssetManager().get("pete.tmx");
         tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap, batch);
@@ -65,7 +67,7 @@ public class GameScreen extends ScreenAdapter {
         shapeRenderer.setProjectionMatrix(camera.projection);
         shapeRenderer.setTransformMatrix(camera.view);
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-        //
+        pete.drawDebug(shapeRenderer);
         shapeRenderer.end();
     }
 
@@ -83,6 +85,6 @@ public class GameScreen extends ScreenAdapter {
     }
 
     private void update(float delta) {
-
+        pete.update();
     }
 }
