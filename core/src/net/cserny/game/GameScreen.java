@@ -2,10 +2,7 @@ package net.cserny.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
-import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -48,7 +45,8 @@ public class GameScreen extends ScreenAdapter {
 
         shapeRenderer = new ShapeRenderer();
         batch = new SpriteBatch();
-        pete = new Pete();
+
+        pete = new Pete(game.getAssetManager().get("pete.png", Texture.class));
 
         tiledMap = game.getAssetManager().get("pete.tmx");
         tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap, batch);
@@ -60,7 +58,7 @@ public class GameScreen extends ScreenAdapter {
         update(delta);
         clearScreen();
         draw();
-        drawDebug();
+//        drawDebug();
     }
 
     private void drawDebug() {
@@ -74,17 +72,36 @@ public class GameScreen extends ScreenAdapter {
     private void draw() {
         batch.setProjectionMatrix(camera.projection);
         batch.setTransformMatrix(camera.view);
-//        batch.begin();
+
         tiledMapRenderer.render();
-//        batch.end();
+
+        batch.begin();
+        pete.draw(batch);
+        batch.end();
     }
 
     private void clearScreen() {
-        Gdx.gl.glClearColor(Color.BLACK.r, Color.BLACK.g, Color.BLACK.b, Color.BLACK.a);
+        Gdx.gl.glClearColor(Color.SKY.r, Color.SKY.g, Color.SKY.b, Color.SKY.a);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
     }
 
     private void update(float delta) {
-        pete.update();
+        pete.update(delta);
+        stopPeteLeavingScreen();
+    }
+
+    private void stopPeteLeavingScreen() {
+        if (pete.getY() < 0) {
+            pete.setPosition(pete.getX(), 0);
+            pete.landed();
+        }
+
+        if (pete.getX() < 0) {
+            pete.setPosition(0, pete.getY());
+        }
+
+        if (pete.getX() + Pete.WIDTH > WORLD_WIDTH) {
+            pete.setPosition(WORLD_WIDTH - Pete.WIDTH, pete.getY());
+        }
     }
 }
