@@ -42,6 +42,7 @@ public class LoadingScreen extends ScreenAdapter {
 
         game.getAssetManager().load("pete.tmx", TiledMap.class);
         game.getAssetManager().load("pete.png", Texture.class);
+        game.getAssetManager().load("acorn.png", Texture.class);
     }
 
     @Override

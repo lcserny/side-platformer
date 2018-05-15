@@ -46,6 +46,10 @@ public class Pete {
         return y;
     }
 
+    public Rectangle getCollisionRectangle() {
+        return collisionRectangle;
+    }
+
     public void update(float delta) {
         animationTimer += delta;
 
