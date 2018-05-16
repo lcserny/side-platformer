@@ -107,6 +107,7 @@ public class GameScreen extends ScreenAdapter {
         stopPeteLeavingScreen();
         handlePeteCollision();
         handlePeteCollisionWithAcorn();
+        updateCameraX();
     }
 
     private void populateAcorns() {
@@ -137,8 +138,21 @@ public class GameScreen extends ScreenAdapter {
             pete.setPosition(0, pete.getY());
         }
 
-        if (pete.getX() + Pete.WIDTH > WORLD_WIDTH) {
-            pete.setPosition(WORLD_WIDTH - Pete.WIDTH, pete.getY());
+        TiledMapTileLayer layer = (TiledMapTileLayer) tiledMap.getLayers().get(0);
+        float levelWidth = layer.getWidth() * layer.getTileWidth();
+        if (pete.getX() + Pete.WIDTH > levelWidth) {
+            pete.setPosition(levelWidth - Pete.WIDTH, pete.getY());
+        }
+    }
+
+    private void updateCameraX() {
+        TiledMapTileLayer layer = (TiledMapTileLayer) tiledMap.getLayers().get(0);
+        float levelWidth = layer.getWidth() * layer.getTileWidth();
+
+        if ((pete.getX() > WORLD_WIDTH / 2f) && (pete.getX() < (levelWidth - WORLD_WIDTH / 2f))) {
+            camera.position.set(pete.getX(), camera.position.y, camera.position.z);
+            camera.update();
+            tiledMapRenderer.setView(camera);
         }
     }
 
