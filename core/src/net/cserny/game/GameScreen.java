@@ -2,6 +2,8 @@ package net.cserny.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -57,7 +59,10 @@ public class GameScreen extends ScreenAdapter {
         shapeRenderer = new ShapeRenderer();
         batch = new SpriteBatch();
 
-        pete = new Pete(game.getAssetManager().get("pete.png", Texture.class));
+        pete = new Pete(
+                game.getAssetManager().get("pete.png", Texture.class),
+                game.getAssetManager().get("jump.wav", Sound.class)
+        );
         pete.setPosition(WORLD_WIDTH / 10, WORLD_HEIGHT / 2);
 
         tiledMap = game.getAssetManager().get("pete.tmx");
@@ -65,6 +70,10 @@ public class GameScreen extends ScreenAdapter {
         tiledMapRenderer.setView(camera);
 
         populateAcorns();
+
+        Music music = game.getAssetManager().get("peteTheme.mp3", Music.class);
+        music.setLooping(true);
+        music.play();
     }
 
     @Override
@@ -123,6 +132,7 @@ public class GameScreen extends ScreenAdapter {
         for (Iterator<Acorn> iterator = acorns.iterator(); iterator.hasNext(); ) {
             Acorn acorn = iterator.next();
             if (pete.getCollisionRectangle().overlaps(acorn.getCollision())) {
+                game.getAssetManager().get("acorn.wav", Sound.class).play();
                 iterator.remove();
             }
         }
